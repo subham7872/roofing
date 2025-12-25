@@ -31,7 +31,7 @@ export const ImageAnalyzer = () => {
   return (
     <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 max-w-4xl mx-auto my-12" id="ai-analyzer">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-medium text-blue-900 mb-4">AI Roof Health Check</h2>
+        <h2 className="text-2xl font-medium text-blue-900 mb-4">AI Roof Health Check</h2>
         <p className="text-slate-600">Upload a photo of your roof for an instant AI-powered preliminary inspection.</p>
       </div>
 
@@ -72,7 +72,7 @@ export const ImageAnalyzer = () => {
         </div>
 
         <div className="bg-slate-50 rounded-xl p-6 min-h-[300px] border border-gray-200">
-          <h3 className="font-medium text-lg text-slate-800 mb-4 flex items-center gap-2">
+          <h3 className="font-medium text-base text-slate-800 mb-4 flex items-center gap-2">
             <i className="fas fa-clipboard-list text-blue-600"></i>
             Analysis Report
           </h3>

@@ -6,7 +6,7 @@ export const Testimonials = () => (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-16">
         <h2 className="text-base font-medium text-blue-700 uppercase tracking-widest mb-4">Customer Love</h2>
-        <h3 className="text-4xl font-medium text-blue-900">What Our Clients Say</h3>
+        <h3 className="text-3xl font-medium text-blue-900">What Our Clients Say</h3>
       </div>
       <div className="grid md:grid-cols-3 gap-8">
         {TESTIMONIALS.map((t, idx) => (

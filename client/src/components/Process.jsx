@@ -5,7 +5,7 @@ export const Process = () => (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-20">
         <h2 className="text-base font-medium text-blue-700 uppercase tracking-widest mb-4">The Plan</h2>
-        <h3 className="text-4xl font-medium text-blue-900">How We Deliver Excellence</h3>
+        <h3 className="text-3xl font-medium text-blue-900">How We Deliver Excellence</h3>
       </div>
       <div className="relative">
         {/* Connection Line */}
@@ -19,11 +19,11 @@ export const Process = () => (
             { step: '05', title: 'Guarantee', desc: 'Job completed with a 100% satisfaction guarantee.', icon: 'fa-shield-check' },
           ].map((p, i) => (
             <div key={i} className="text-center group">
-              <div className="w-16 h-16 bg-white border-4 border-blue-50 rounded-full flex items-center justify-center text-blue-700 text-xl font-medium mx-auto mb-6 group-hover:border-blue-700 transition-colors shadow-lg">
+              <div className="w-16 h-16 bg-white border-4 border-blue-50 rounded-full flex items-center justify-center text-blue-700 text-lg font-medium mx-auto mb-6 group-hover:border-blue-700 transition-colors shadow-lg">
                 <i className={`fas ${p.icon}`}></i>
               </div>
               <p className="text-blue-700 font-medium text-xs uppercase tracking-widest mb-2">Step {p.step}</p>
-              <h4 className="text-xl font-medium text-blue-900 mb-4">{p.title}</h4>
+              <h4 className="text-lg font-medium text-blue-900 mb-4">{p.title}</h4>
               <p className="text-slate-500 text-sm leading-relaxed px-4">{p.desc}</p>
             </div>
           ))}

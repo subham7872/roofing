@@ -1,58 +1,78 @@
 import React from 'react';
 
-export const Footer = () => (
-  <footer className="bg-slate-900 text-slate-400 py-16">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid md:grid-cols-4 gap-12 mb-16">
-        <div className="col-span-1 md:col-span-1">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-blue-700 rounded flex items-center justify-center">
-              <i className="fas fa-shield-halved text-white text-sm"></i>
+const Footer = () => {
+  return (
+    <footer className="bg-slate-900 border-t border-slate-800 pt-16 pb-24 md:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          <div className="space-y-6">
+            <div className="flex flex-col">
+              <span className="text-xl font-medium text-white tracking-tight">
+                <span className="text-red-600 mr-1">RESTORE</span>PRO
+              </span>
+              <span className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-medium">
+                Restoring Homes. Rebuilding Peace.
+              </span>
             </div>
-            <span className="font-medium text-lg tracking-tight text-white">
-              Demo Roofing Company
-            </span>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Serving the community with integrity and speed for over 25 years. We are your local partners in disaster recovery. (This is a demo website)
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors">f</a>
+              <a href="#" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors">in</a>
+              <a href="#" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors">ig</a>
+            </div>
           </div>
-          <p className="text-sm leading-relaxed mb-6">
-            Delivering high-quality roofing solutions. This is a demo website for client presentation purposes.
-          </p>
-          <div className="flex gap-4">
-            {['facebook', 'instagram', 'twitter', 'linkedin'].map((s) => (
-              <a key={s} href="#" className="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all">
-                <i className={`fab fa-${s}`}></i>
-              </a>
-            ))}
+
+          <div>
+            <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Our Services</h4>
+            <ul className="space-y-4 text-slate-400 text-sm">
+              <li><a href="#" className="hover:text-red-500 transition-colors">Water Damage Restoration</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Fire & Smoke Remediation</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Mold Cleanup & Removal</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Storm Damage Repair</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Sewage Extraction</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Resources</h4>
+            <ul className="space-y-4 text-slate-400 text-sm">
+              <li><a href="#" className="hover:text-red-500 transition-colors">Insurance Claim FAQ</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Safety Tips Guide</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Commercial Restoration</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Residential Services</a></li>
+              <li><a href="#" className="hover:text-red-500 transition-colors">Contact Support</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3 text-slate-400 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>123 Demo Street,<br />Demo City, ST 12345 (Demo Address)</span>
+              </div>
+              <div className="flex items-center space-x-3 text-slate-400 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span className="text-white font-medium">(555) 000-0000 (Demo Number)</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <h5 className="text-white font-medium mb-6">Services</h5>
-          <ul className="space-y-4 text-sm">
-            {['Residential Roofing', 'Commercial Roofing', 'Roof Replacement', 'Leak Repairs', 'Inspections'].map((l) => (
-              <li key={l}><a href="#" className="hover:text-blue-400 transition-colors">{l}</a></li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-white font-medium mb-6">Company</h5>
-          <ul className="space-y-4 text-sm">
-            {['About Us', 'Our Process', 'Financing', 'Careers', 'Privacy Policy'].map((l) => (
-              <li key={l}><a href="#" className="hover:text-blue-400 transition-colors">{l}</a></li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-white font-medium mb-6">Contact</h5>
-          <ul className="space-y-4 text-sm">
-            <li className="flex gap-3"><i className="fas fa-location-dot mt-1 text-blue-700"></i> 123 Demo Street,<br />Demo City, ST 12345 (Demo Address)</li>
-            <li className="flex gap-3"><i className="fas fa-phone mt-1 text-blue-700"></i> (555) 000-0000 (Demo Number)</li>
-            <li className="flex gap-3"><i className="fas fa-envelope mt-1 text-blue-700"></i> demo@example.com (Demo Email)</li>
-          </ul>
+
+        <div className="pt-8 border-t border-slate-800 text-center text-slate-500 text-xs">
+          <p>© {new Date().getFullYear()} RestorePro Services. All Rights Reserved. Licensed & Insured #DEMO123456. (This is a demo website)</p>
         </div>
       </div>
-      <div className="pt-8 border-t border-slate-800 text-center text-xs">
-        <p>© {new Date().getFullYear()} Demo Roofing Company. Licensed #DEMO123456. All Rights Reserved. (This is a demo website)</p>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
+
+export default Footer;
 
