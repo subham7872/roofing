@@ -1,0 +1,14 @@
+{
+  "name": "roofing-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build",
+    "start": "cd client && npm run preview",
+    "install": "cd client && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
