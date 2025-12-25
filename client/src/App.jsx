@@ -9,6 +9,7 @@ import EmergencyFunnel from './components/EmergencyFunnel';
 import Footer from './components/Footer';
 import EmergencyBanner from './components/EmergencyBanner';
 import MobileQuickActions from './components/MobileQuickActions';
+import { ChatWidget } from './components/ChatWidget';
 import './App.css';
 
 function App() {
@@ -44,6 +45,9 @@ function App() {
 
       {/* Persistent Phone CTA for Mobile */}
       <MobileQuickActions onEmergencyClick={() => setShowFunnel(true)} />
+
+      {/* Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }
