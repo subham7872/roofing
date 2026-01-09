@@ -13,13 +13,13 @@ const leadSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
     required: function() {
-      return this.source !== 'discount_modal';
+      return this.source !== 'discount_modal' && this.source !== 'chatbot';
     }
   },
   serviceName: {
     type: String,
     required: function() {
-      return this.source !== 'discount_modal';
+      return this.source !== 'discount_modal' && this.source !== 'chatbot';
     },
     trim: true
   },

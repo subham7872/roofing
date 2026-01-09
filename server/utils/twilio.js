@@ -1,9 +1,28 @@
 const twilio = require('twilio');
 
 /**
+ * Check if SMS is enabled via environment variable
+ */
+const isSMSEnabled = () => {
+  return process.env.ENABLE_SMS === 'true';
+};
+
+/**
+ * Check if WhatsApp is enabled via environment variable
+ */
+const isWhatsAppEnabled = () => {
+  return process.env.ENABLE_WHATSAPP === 'true';
+};
+
+/**
  * Initialize Twilio client
  */
 const getTwilioClient = () => {
+  // Check environment toggles first
+  if (!isSMSEnabled() && !isWhatsAppEnabled()) {
+    return null; // Both disabled, no need to initialize
+  }
+
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
 
@@ -50,9 +69,15 @@ const formatPhoneNumber = (phone) => {
  */
 const sendWhatsAppMessage = async (to, message) => {
   try {
+    // Check environment toggle first
+    if (!isWhatsAppEnabled()) {
+      console.log('⚠️ WhatsApp disabled via ENABLE_WHATSAPP=false, skipping WhatsApp message');
+      return { success: false, error: 'WhatsApp disabled' };
+    }
+
     const client = getTwilioClient();
     if (!client) {
-      console.log('Twilio not configured, skipping WhatsApp message');
+      console.log('⚠️ Twilio not configured, skipping WhatsApp message');
       return { success: false, error: 'Twilio not configured' };
     }
 
@@ -91,13 +116,19 @@ const sendWhatsAppMessage = async (to, message) => {
  */
 const sendSMS = async (to, message) => {
   try {
+    // Check environment toggle first
+    if (!isSMSEnabled()) {
+      console.log('⚠️ SMS disabled via ENABLE_SMS=false, skipping SMS');
+      return { success: false, error: 'SMS disabled' };
+    }
+
     const client = getTwilioClient();
     if (!client) {
-      console.log('Twilio not configured, skipping SMS');
+      console.log('⚠️ Twilio not configured, skipping SMS');
       return { success: false, error: 'Twilio not configured' };
     }
 
-    const from = process.env.TWILIO_PHONE_NUMBER || process.env.TWILIO_FROM;
+    const from = process.env.TWILIO_PHONE_NUMBER || process.env.TWILIO_FROM || '+15707125308';
 
     if (!from) {
       console.warn('TWILIO_PHONE_NUMBER not set, cannot send SMS');
@@ -131,43 +162,61 @@ const sendSMS = async (to, message) => {
  * @returns {Promise<Object>} Result object
  */
 const sendEmergencyAlert = async (ownerPhone, leadData) => {
-  if (!ownerPhone) {
-    return { success: false, error: 'Owner phone number not provided' };
-  }
+  try {
+    if (!ownerPhone) {
+      return { success: false, error: 'Owner phone number not provided' };
+    }
 
-  const { issue, location, phone, createdAt, afterHours } = leadData;
-  
-  // Format createdAt timestamp
-  const timeStr = createdAt 
-    ? new Date(createdAt).toLocaleString('en-US', { 
-        timeZone: 'America/New_York',
-        dateStyle: 'short',
-        timeStyle: 'short'
-      })
-    : new Date().toLocaleString();
+    const { issue, location, phone, createdAt, afterHours } = leadData;
+    
+    // Format createdAt timestamp
+    const timeStr = createdAt 
+      ? new Date(createdAt).toLocaleString('en-US', { 
+          timeZone: 'America/New_York',
+          dateStyle: 'short',
+          timeStyle: 'short'
+        })
+      : new Date().toLocaleString();
 
-  // Format message with AFTER HOURS prefix if applicable
-  const prefix = afterHours ? '⚠️ AFTER HOURS\n\n' : '';
-  const message = `${prefix}🔥 EMERGENCY LEAD
+    // Format message with AFTER HOURS prefix if applicable
+    const prefix = afterHours ? '⚠️ AFTER HOURS\n\n' : '';
+    const message = `${prefix}🔥 EMERGENCY LEAD
 Issue: ${issue}
 Location: ${location}
 Phone: ${phone}
 Time: ${timeStr}`;
 
-  // Send both WhatsApp and SMS (await both to ensure they're sent before response)
-  const results = await Promise.allSettled([
-    sendWhatsAppMessage(ownerPhone, message),
-    sendSMS(ownerPhone, message)
-  ]);
+    // Send both WhatsApp and SMS (await both to ensure they're sent before response)
+    // Wrap in try-catch to prevent crashes
+    const results = await Promise.allSettled([
+      sendWhatsAppMessage(ownerPhone, message).catch(err => {
+        console.error('WhatsApp send error in sendEmergencyAlert:', err.message);
+        return { success: false, error: err.message };
+      }),
+      sendSMS(ownerPhone, message).catch(err => {
+        console.error('SMS send error in sendEmergencyAlert:', err.message);
+        return { success: false, error: err.message };
+      })
+    ]);
 
-  const whatsappResult = results[0].status === 'fulfilled' ? results[0].value : { success: false, error: results[0].reason };
-  const smsResult = results[1].status === 'fulfilled' ? results[1].value : { success: false, error: results[1].reason };
+    const whatsappResult = results[0].status === 'fulfilled' ? results[0].value : { success: false, error: results[0].reason?.message || 'Unknown error' };
+    const smsResult = results[1].status === 'fulfilled' ? results[1].value : { success: false, error: results[1].reason?.message || 'Unknown error' };
 
-  return {
-    success: whatsappResult.success || smsResult.success,
-    whatsapp: whatsappResult,
-    sms: smsResult
-  };
+    return {
+      success: whatsappResult.success || smsResult.success,
+      whatsapp: whatsappResult,
+      sms: smsResult
+    };
+  } catch (error) {
+    // Never throw - always return error object
+    console.error('sendEmergencyAlert error:', error.message);
+    return {
+      success: false,
+      error: error.message,
+      whatsapp: { success: false, error: error.message },
+      sms: { success: false, error: error.message }
+    };
+  }
 };
 
 /**
@@ -177,13 +226,25 @@ Time: ${timeStr}`;
  * @returns {Promise<Object>} Result object
  */
 const sendCustomerAutoReply = async (customerPhone, customerName) => {
-  if (!customerPhone) {
-    return { success: false, error: 'Customer phone number not provided' };
+  try {
+    if (!customerPhone) {
+      return { success: false, error: 'Customer phone number not provided' };
+    }
+
+    const message = `Thanks ${customerName}! Our team will contact you shortly.`;
+
+    // Wrap in try-catch to prevent crashes
+    const result = await sendWhatsAppMessage(customerPhone, message).catch(err => {
+      console.error('Customer auto-reply error:', err.message);
+      return { success: false, error: err.message };
+    });
+
+    return result;
+  } catch (error) {
+    // Never throw - always return error object
+    console.error('sendCustomerAutoReply error:', error.message);
+    return { success: false, error: error.message };
   }
-
-  const message = `Thanks ${customerName}! Our team will contact you shortly.`;
-
-  return await sendWhatsAppMessage(customerPhone, message);
 };
 
 module.exports = {
@@ -192,5 +253,7 @@ module.exports = {
   sendEmergencyAlert,
   sendCustomerAutoReply,
   getTwilioClient,
-  formatPhoneNumber
+  formatPhoneNumber,
+  isSMSEnabled,
+  isWhatsAppEnabled
 };

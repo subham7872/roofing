@@ -1,6 +1,4 @@
 {
   "/page": "app/page.js",
-  "/water-damage/page": "app/water-damage/page.js",
-  "/about/page": "app/about/page.js",
   "/dashboard/page": "app/dashboard/page.js"
 }

@@ -46,9 +46,27 @@ const businessSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
+    ownerPhone: {
+      type: String,
+      default: ''
+    },
     autoAssignLeads: {
       type: Boolean,
       default: true
+    },
+    notifications: {
+      sms: {
+        type: Boolean,
+        default: false
+      },
+      whatsapp: {
+        type: Boolean,
+        default: false
+      },
+      email: {
+        type: Boolean,
+        default: true  // Email always enabled by default
+      }
     }
   }
 }, {

@@ -6,6 +6,7 @@ const { sendUserConfirmationEmail, sendOwnerNotificationEmail } = require('../co
 const { analyzeLead } = require('../services/ai.service');
 const { triggerWebhook } = require('../services/webhook.service');
 const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
+const { notifyOwner } = require('../utils/notifyOwner');
 
 // @desc    Get all leads for a business
 // @route   GET /api/leads?businessId=xxx
@@ -188,30 +189,33 @@ const createLead = async (req, res) => {
     await lead.populate('serviceId', 'title image');
     await lead.populate('businessId', 'name email');
 
-    // Send notifications (async - don't block response)
-    const ownerPhone = business.settings?.ownerPhone || business.phone;
+    // Send owner notifications using central controller (respects preferences and toggles)
     const isEmergency = aiResult.urgency === 'emergency';
+    const isDemoMode = process.env.DEMO_MODE === 'true' || (!process.env.ENABLE_SMS && !process.env.ENABLE_WHATSAPP);
+
+    // Use central notification controller (handles SMS/WhatsApp/Email with fallback)
+    try {
+      await notifyOwner({
+        business,
+        leadData: {
+          issue: service.title,
+          location: pincode,
+          phone: phone,
+          createdAt: lead.createdAt,
+          afterHours: false // Could be calculated if needed
+        },
+        isEmergency: isEmergency,
+        isDemoMode: isDemoMode
+      });
+    } catch (err) {
+      console.error('Owner notification error:', err);
+      // Continue even if notifications fail - lead is already saved
+    }
 
     Promise.all([
       sendUserConfirmationEmail(email, name, service.title).catch(err => 
         console.error('User email error:', err)
       ),
-      sendOwnerNotificationEmail({
-        ...lead.toObject(),
-        businessName: business.name,
-        ownerEmail: business.settings?.ownerEmail || business.email
-      }).catch(err => 
-        console.error('Owner email error:', err)
-      ),
-      // Twilio alerts based on urgency
-      isEmergency && ownerPhone 
-        ? sendEmergencyAlert(ownerPhone, {
-            issue: service.title,
-            location: pincode,
-            phone: phone,
-            createdAt: lead.createdAt
-          }).catch(err => console.error('Emergency alert error:', err))
-        : Promise.resolve(),
       
       // Auto-reply to customer for normal leads
       !isEmergency && phone

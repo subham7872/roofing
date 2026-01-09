@@ -5,6 +5,7 @@ const Service = require('../model/Service');
 const { analyzeLead } = require('../services/ai.service');
 const { sendUserConfirmationEmail, sendOwnerNotificationEmail } = require('../config/email');
 const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
+const { notifyOwner } = require('../utils/notifyOwner');
 
 // Store conversation sessions (in production, use Redis or database)
 const conversationSessions = new Map();
@@ -189,36 +190,31 @@ const createChatbotLead = async (req, res) => {
       afterHours: afterHours
     });
 
-    // Send owner alerts BEFORE API responds (only for emergencies)
-    const ownerPhone = business.settings?.ownerPhone || business.phone;
+    // Send owner notifications using central controller (respects preferences and toggles)
     const isEmergencyLead = normalizedUrgency === 'emergency';
+    const isDemoMode = process.env.DEMO_MODE === 'true' || (!process.env.ENABLE_SMS && !process.env.ENABLE_WHATSAPP);
 
-    if (isEmergencyLead && ownerPhone) {
-      // Send emergency alerts immediately (await to ensure they're sent before response)
-      try {
-        await sendEmergencyAlert(ownerPhone, {
+    // Use central notification controller (handles SMS/WhatsApp/Email with fallback)
+    try {
+      await notifyOwner({
+        business,
+        leadData: {
           issue,
           location,
           phone,
           createdAt: lead.createdAt,
           afterHours: afterHours
-        });
-        console.log('Emergency alerts sent to owner');
-      } catch (err) {
-        console.error('Emergency alert error:', err);
-        // Continue even if alerts fail
-      }
+        },
+        isEmergency: isEmergencyLead,
+        isDemoMode: isDemoMode
+      });
+    } catch (err) {
+      console.error('Owner notification error:', err);
+      // Continue even if notifications fail - lead is already saved
     }
 
     // Send other notifications asynchronously (don't block response)
     Promise.all([
-      // Email notification
-      sendOwnerNotificationEmail({
-        ...lead.toObject(),
-        businessName: business.name,
-        ownerEmail: business.settings?.ownerEmail || business.email
-      }).catch(err => console.error('Owner email error:', err)),
-      
       // Auto-reply to customer for normal leads only
       !isEmergencyLead && phone
         ? sendCustomerAutoReply(phone, name).catch(err => console.error('Customer auto-reply error:', err))
@@ -437,7 +433,7 @@ const submitStructuredLead = async (req, res) => {
     // Create lead (save to MongoDB)
     const lead = await Lead.create({
       businessId: business._id,
-      serviceId: service?._id,
+      serviceId: service?._id || null, // Allow null for chatbot leads
       serviceName: service?.title || leadData.issue || 'General Service',
       name: leadData.name,
       phone: leadData.phone,
@@ -452,35 +448,31 @@ const submitStructuredLead = async (req, res) => {
       afterHours: afterHours
     });
 
-    // Send owner alerts BEFORE API responds (only for emergencies)
-    const ownerPhone = business.settings?.ownerPhone || business.phone;
+    // Send owner notifications using central controller (respects preferences and toggles)
     const isEmergencyLead = aiResult.urgency === 'emergency';
+    const isDemoMode = process.env.DEMO_MODE === 'true' || (!process.env.ENABLE_SMS && !process.env.ENABLE_WHATSAPP);
 
-    if (isEmergencyLead && ownerPhone) {
-      // Send emergency alerts immediately (await to ensure they're sent before response)
-      try {
-        await sendEmergencyAlert(ownerPhone, {
+    // Use central notification controller (handles SMS/WhatsApp/Email with fallback)
+    try {
+      await notifyOwner({
+        business,
+        leadData: {
           issue: leadData.issue,
           location: leadData.location,
           phone: leadData.phone,
           createdAt: lead.createdAt,
           afterHours: afterHours
-        });
-        console.log('Emergency alerts sent to owner');
-      } catch (err) {
-        console.error('Emergency alert error:', err);
-        // Continue even if alerts fail
-      }
+        },
+        isEmergency: isEmergencyLead,
+        isDemoMode: isDemoMode
+      });
+    } catch (err) {
+      console.error('Owner notification error:', err);
+      // Continue even if notifications fail - lead is already saved
     }
 
     // Send other notifications asynchronously (don't block response)
     Promise.all([
-      sendOwnerNotificationEmail({
-        ...lead.toObject(),
-        businessName: business.name,
-        ownerEmail: business.settings?.ownerEmail || business.email
-      }).catch(err => console.error('Owner email error:', err)),
-      
       // Auto-reply to customer for normal leads only
       !isEmergencyLead && leadData.phone
         ? sendCustomerAutoReply(leadData.phone, leadData.name).catch(err => console.error('Customer auto-reply error:', err))
@@ -653,7 +645,7 @@ const submitChatbotLead = async (req, res) => {
 
     const lead = await Lead.create({
       businessId: business._id,
-      serviceId: service?._id,
+      serviceId: service?._id || null, // Allow null for chatbot leads
       serviceName: service?.title || leadData.serviceType || 'General Service',
       name: leadData.name,
       phone: leadData.phone,
