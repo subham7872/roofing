@@ -85,11 +85,11 @@ const Navbar = ({ onEmergencyClick }) => {
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex flex-col">
-              <span className="text-xl font-medium text-white tracking-tight flex items-center">
-                <span className="text-red-600 mr-1">RESTORE</span>PRO
+              <span className="text-xl font-medium text-white tracking-tight">
+                Restore Pro Service
               </span>
               <span className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-medium">
-                Services • Est. 1998
+                Est. 1988
               </span>
             </Link>
           </div>
