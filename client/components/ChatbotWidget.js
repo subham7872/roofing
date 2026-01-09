@@ -47,7 +47,8 @@ export const ChatbotWidget = () => {
     setIsTyping(true)
 
     try {
-      const response = await fetch('http://localhost:8088/api/chatbot/structured', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088';
+      const response = await fetch(`${API_BASE_URL}/api/chatbot/structured`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -106,7 +107,8 @@ export const ChatbotWidget = () => {
     setIsLoading(true)
     setIsTyping(true)
     try {
-      const response = await fetch('http://localhost:8088/api/chatbot/structured/submit', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088';
+      const response = await fetch(`${API_BASE_URL}/api/chatbot/structured/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

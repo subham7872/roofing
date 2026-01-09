@@ -59,12 +59,20 @@ const corsOptions = {
       'http://localhost:5173',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:3001',
-      'http://127.0.0.1:5173'
+      'http://127.0.0.1:5173',
+      'https://lms.indiacampus.in',
+      'http://lms.indiacampus.in',
+      // Add production frontend URL from environment if set
+      ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [])
     ];
     
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    // Allow if origin is in allowed list OR if explicitly allowed via env OR development mode
+    if (allowedOrigins.indexOf(origin) !== -1 || 
+        process.env.CORS_ORIGIN === '*' || 
+        process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
+      console.warn(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },

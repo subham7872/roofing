@@ -41,7 +41,8 @@ export const ChatWidget = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8088/api/chatbot/message', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088';
+      const response = await fetch(`${API_BASE_URL}/api/chatbot/message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -93,7 +94,8 @@ export const ChatWidget = () => {
 
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:8088/api/chatbot/submit', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088';
+      const response = await fetch(`${API_BASE_URL}/api/chatbot/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

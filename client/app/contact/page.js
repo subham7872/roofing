@@ -59,7 +59,8 @@ export default function ContactPage() {
     setErrors({})
 
     try {
-      const response = await fetch('http://localhost:8088/api/contact', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088';
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
