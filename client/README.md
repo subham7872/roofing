@@ -1,16 +1,66 @@
-# React + Vite
+# RestorePro Services - Next.js
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a Next.js conversion of the RestorePro Services website.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Installation
 
-## React Compiler
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Environment Variables
 
-## Expanding the ESLint configuration
+Create a `.env.local` file in the root directory:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+NEXT_PUBLIC_GEMINI_API_KEY=your_api_key_here
+```
+
+### Development
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Build
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+### Start Production Server
+
+```bash
+npm start
+```
+
+## Project Structure
+
+- `app/` - Next.js App Router pages and layouts
+- `components/` - React components
+- `services/` - API services (Gemini AI integration)
+- `public/` - Static assets
+- `types.js` - Type definitions
+
+## Features
+
+- 5 dropdown navigation menus (Plumbing, Drains, HVAC, Water Damage, Emergency Services)
+- Hero section with image on the right
+- Emergency funnel modal
+- Chat widget with AI integration
+- Responsive design
+- Tailwind CSS styling
+
+## Notes
+
+- This is a demo website for client presentation
+- All contact information is fake/demo data
+- Gemini API integration is optional (falls back to mock responses if API key is not set)
