@@ -1,23 +1,32 @@
-const twilio = require('twilio');
+// TWILIO INTEGRATION - COMMENTED OUT (Can be enabled when needed)
+// const twilio = require('twilio');
 
 /**
  * Check if SMS is enabled via environment variable
  */
 const isSMSEnabled = () => {
-  return process.env.ENABLE_SMS === 'true';
+  // Twilio disabled - always return false
+  return false;
+  // return process.env.ENABLE_SMS === 'true';
 };
 
 /**
  * Check if WhatsApp is enabled via environment variable
  */
 const isWhatsAppEnabled = () => {
-  return process.env.ENABLE_WHATSAPP === 'true';
+  // Twilio disabled - always return false
+  return false;
+  // return process.env.ENABLE_WHATSAPP === 'true';
 };
 
 /**
  * Initialize Twilio client
  */
 const getTwilioClient = () => {
+  // Twilio disabled - always return null
+  return null;
+  
+  /* COMMENTED OUT - Enable when Twilio credentials are configured
   // Check environment toggles first
   if (!isSMSEnabled() && !isWhatsAppEnabled()) {
     return null; // Both disabled, no need to initialize
@@ -37,6 +46,7 @@ const getTwilioClient = () => {
     console.error('Twilio initialization error:', error.message);
     return null;
   }
+  */
 };
 
 /**
@@ -68,6 +78,11 @@ const formatPhoneNumber = (phone) => {
  * @returns {Promise<Object>} Result object
  */
 const sendWhatsAppMessage = async (to, message) => {
+  // Twilio disabled - return disabled message
+  console.log('⚠️ Twilio WhatsApp disabled - notifications will use email fallback');
+  return { success: false, error: 'Twilio WhatsApp disabled' };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     // Check environment toggle first
     if (!isWhatsAppEnabled()) {
@@ -106,6 +121,7 @@ const sendWhatsAppMessage = async (to, message) => {
     console.error('WhatsApp send error:', error.message);
     return { success: false, error: error.message };
   }
+  */
 };
 
 /**
@@ -115,6 +131,11 @@ const sendWhatsAppMessage = async (to, message) => {
  * @returns {Promise<Object>} Result object
  */
 const sendSMS = async (to, message) => {
+  // Twilio disabled - return disabled message
+  console.log('⚠️ Twilio SMS disabled - notifications will use email fallback');
+  return { success: false, error: 'Twilio SMS disabled' };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     // Check environment toggle first
     if (!isSMSEnabled()) {
@@ -153,6 +174,7 @@ const sendSMS = async (to, message) => {
     console.error('SMS send error:', error.message);
     return { success: false, error: error.message };
   }
+  */
 };
 
 /**
@@ -162,6 +184,17 @@ const sendSMS = async (to, message) => {
  * @returns {Promise<Object>} Result object
  */
 const sendEmergencyAlert = async (ownerPhone, leadData) => {
+  // Twilio disabled - return disabled message
+  // Email fallback will be used via notifyOwner.js
+  console.log('⚠️ Twilio emergency alerts disabled - using email fallback');
+  return {
+    success: false,
+    error: 'Twilio disabled - use email fallback',
+    whatsapp: { success: false, error: 'Twilio disabled' },
+    sms: { success: false, error: 'Twilio disabled' }
+  };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     if (!ownerPhone) {
       return { success: false, error: 'Owner phone number not provided' };
@@ -217,6 +250,7 @@ Time: ${timeStr}`;
       sms: { success: false, error: error.message }
     };
   }
+  */
 };
 
 /**
@@ -226,6 +260,12 @@ Time: ${timeStr}`;
  * @returns {Promise<Object>} Result object
  */
 const sendCustomerAutoReply = async (customerPhone, customerName) => {
+  // Twilio disabled - return disabled message
+  // Email confirmation will be used instead
+  console.log('⚠️ Twilio customer auto-reply disabled - email confirmation will be used');
+  return { success: false, error: 'Twilio disabled - use email confirmation' };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     if (!customerPhone) {
       return { success: false, error: 'Customer phone number not provided' };
@@ -245,6 +285,7 @@ const sendCustomerAutoReply = async (customerPhone, customerName) => {
     console.error('sendCustomerAutoReply error:', error.message);
     return { success: false, error: error.message };
   }
+  */
 };
 
 module.exports = {

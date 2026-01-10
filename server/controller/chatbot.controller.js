@@ -4,7 +4,8 @@ const Business = require('../model/Business.model');
 const Service = require('../model/Service');
 const { analyzeLead } = require('../services/ai.service');
 const { sendUserConfirmationEmail, sendOwnerNotificationEmail } = require('../config/email');
-const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
+// TWILIO INTEGRATION - COMMENTED OUT (Using notifyOwner with email fallback)
+// const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
 const { notifyOwner } = require('../utils/notifyOwner');
 
 // Store conversation sessions (in production, use Redis or database)

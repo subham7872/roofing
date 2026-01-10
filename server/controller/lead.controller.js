@@ -5,7 +5,8 @@ const Service = require('../model/Service');
 const { sendUserConfirmationEmail, sendOwnerNotificationEmail } = require('../config/email');
 const { analyzeLead } = require('../services/ai.service');
 const { triggerWebhook } = require('../services/webhook.service');
-const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
+// TWILIO INTEGRATION - COMMENTED OUT (Using notifyOwner with email fallback)
+// const { sendEmergencyAlert, sendCustomerAutoReply } = require('../utils/twilio');
 const { notifyOwner } = require('../utils/notifyOwner');
 
 // @desc    Get all leads for a business

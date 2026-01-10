@@ -1,5 +1,10 @@
-const { sendSMS, sendWhatsAppMessage, isSMSEnabled, isWhatsAppEnabled } = require('./twilio');
+// TWILIO INTEGRATION - COMMENTED OUT (Email fallback always used)
+// const { sendSMS, sendWhatsAppMessage, isSMSEnabled, isWhatsAppEnabled } = require('./twilio');
 const { sendOwnerNotificationEmail } = require('../config/email');
+
+// Twilio helper functions - disabled (always return false)
+const isSMSEnabled = () => false;
+const isWhatsAppEnabled = () => false;
 
 /**
  * Central notification controller for owner alerts
@@ -66,8 +71,11 @@ Time: ${timeStr}`;
     };
   }
 
-  // EMERGENCY LEADS: Try SMS and WhatsApp first
+  // EMERGENCY LEADS: Twilio disabled - use email directly
   if (isEmergency) {
+    // TWILIO SMS/WHATSAPP - COMMENTED OUT (Disabled)
+    // Twilio notifications are disabled, so we'll use email directly
+    /*
     // Try SMS
     if (notifications.sms && isSMSEnabled() && ownerPhone) {
       results.sms.attempted = true;
@@ -101,12 +109,12 @@ Time: ${timeStr}`;
         results.whatsapp.success = false;
       }
     }
+    */
 
-    // Fallback to email if SMS/WhatsApp didn't work OR if email is preferred
-    const needsEmailFallback = !results.sms.success && !results.whatsapp.success;
-    if (notifications.email && (needsEmailFallback || !notifications.sms && !notifications.whatsapp)) {
+    // Use email directly (Twilio disabled)
+    if (notifications.email) {
       results.email.attempted = true;
-      results.fallbackUsed = needsEmailFallback;
+      results.fallbackUsed = false; // Not a fallback, direct email usage
       try {
         const emailResult = await sendOwnerNotificationEmail({
           ...leadData,
@@ -116,7 +124,7 @@ Time: ${timeStr}`;
         });
         results.email.success = emailResult.success;
         if (emailResult.success) {
-          console.log('📧 Email sent to owner' + (results.fallbackUsed ? ' (fallback)' : ''));
+          console.log('📧 Email sent to owner (Twilio disabled, using email)');
         } else {
           console.log(`⚠️ Email failed: ${emailResult.error}`);
         }

@@ -1,9 +1,14 @@
-const twilio = require('twilio');
+// TWILIO INTEGRATION - COMMENTED OUT (Can be enabled when needed)
+// const twilio = require('twilio');
 
 /**
  * Initialize Twilio client
  */
 const getTwilioClient = () => {
+  // Twilio disabled - always return null
+  return null;
+  
+  /* COMMENTED OUT - Enable when Twilio credentials are configured
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
 
@@ -18,6 +23,7 @@ const getTwilioClient = () => {
     console.error('Twilio initialization error:', error.message);
     return null;
   }
+  */
 };
 
 /**
@@ -27,6 +33,11 @@ const getTwilioClient = () => {
  * @returns {Promise<Object>} Result object
  */
 const sendWhatsAppMessage = async (to, message) => {
+  // Twilio disabled - return disabled message
+  console.log('⚠️ Twilio WhatsApp disabled - use email notifications');
+  return { success: false, error: 'Twilio WhatsApp disabled' };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     const client = getTwilioClient();
     if (!client) {
@@ -57,6 +68,7 @@ const sendWhatsAppMessage = async (to, message) => {
     console.error('WhatsApp send error:', error.message);
     return { success: false, error: error.message };
   }
+  */
 };
 
 /**
@@ -66,6 +78,11 @@ const sendWhatsAppMessage = async (to, message) => {
  * @returns {Promise<Object>} Result object
  */
 const sendSMS = async (to, message) => {
+  // Twilio disabled - return disabled message
+  console.log('⚠️ Twilio SMS disabled - use email notifications');
+  return { success: false, error: 'Twilio SMS disabled' };
+  
+  /* COMMENTED OUT - Enable when Twilio is configured
   try {
     const client = getTwilioClient();
     if (!client) {
@@ -98,6 +115,7 @@ const sendSMS = async (to, message) => {
     console.error('SMS send error:', error.message);
     return { success: false, error: error.message };
   }
+  */
 };
 
 module.exports = {
